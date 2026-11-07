@@ -87,7 +87,13 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
 @media (max-width: 560px) { .ctrls { grid-template-columns: 1fr; } }
 .ctrl { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .ctrl label { font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
-.ctrl label output { font-family: var(--font-display); font-size: 17px; color: var(--accent); font-variant-numeric: tabular-nums; text-align: right; }
+.ctrl label output { font-family: var(--font-display); font-size: 17px; color: var(--accent); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.lblrow { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.lblrow label { font-size: 13px; font-weight: 600; }
+.numin { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.numin input { font: inherit; color: inherit; width: 4.2em; text-align: right; padding: 3px 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); font-variant-numeric: tabular-nums; }
+.numin input:hover { border-color: var(--accent); }
+.numin input[aria-invalid="true"] { border-color: var(--bad); color: var(--bad); }
 .ctrl .hint { font-size: 12px; color: var(--muted); }
 input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .money { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 0 10px; }
@@ -101,16 +107,26 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
 .part { border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; background: var(--bg); }
 .part .k, .tot .k { font-size: 13px; font-weight: 600; color: var(--ink); }
 .part .kk { font-size: 12px; color: var(--muted); margin-top: 4px; }
-.pv { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 6vw, 30px); line-height: 1.1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.pv { font-family: var(--font-display); font-weight: 700; font-size: clamp(22px, 6vw, 30px); line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .pp { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .tot { grid-column: 1 / -1; border-radius: 12px; padding: 14px 16px; background: var(--ink); color: var(--bg); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
 .tot .k { color: var(--bg); opacity: .8; width: 100%; }
-.tv { font-family: var(--font-display); font-weight: 700; font-size: clamp(28px, 8vw, 38px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.tv { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 8vw, 38px); line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tp { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
-@media (max-width: 380px) { .pnl { grid-template-columns: 1fr; } }
+/* Celular: cada bloco do resultado ocupa a largura toda, com o valor na mesma linha do rótulo */
+@media (max-width: 560px) {
+  .pnl { grid-template-columns: 1fr; }
+  .part { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 2px; align-items: baseline; }
+  .part .k { grid-column: 1; grid-row: 1; }
+  .part .pv { grid-column: 2; grid-row: 1 / span 2; text-align: right; align-self: center; font-size: clamp(20px, 6vw, 26px); }
+  .part .pp { grid-column: 1; grid-row: 2; font-size: 14px; }
+  .part .kk { grid-column: 1 / -1; grid-row: 3; }
+  .row { font-size: 13px; }
+  .result .sub { font-size: 14px; }
+}
 .result { background: var(--accent-soft); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
 .result .k { font-size: 13px; color: var(--muted); }
-.result .big { font-family: var(--font-display); font-weight: 700; font-size: clamp(30px, 8vw, 42px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.result .big { font-family: var(--font-display); font-weight: 700; font-size: clamp(28px, 8vw, 42px); line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .result .sub { font-size: 15px; font-variant-numeric: tabular-nums; }
 .renda { border: 1px dashed var(--accent); border-radius: 12px; padding: 12px 14px; font-size: 14px; color: var(--muted); }
 .renda b { color: var(--ink); font-family: var(--font-display); font-size: 20px; font-variant-numeric: tabular-nums; }
@@ -178,12 +194,12 @@ ul.prem b { color: var(--ink); font-weight: 600; }
         <div class="money"><span>R$</span><input id="valor" inputmode="numeric" value="100.000" autocomplete="off"></div>
       </div>
       <div class="ctrl">
-        <label for="compra">Taxa na compra <output id="o-compra" for="compra"></output></label>
+        <div class="lblrow"><label for="compra">Taxa na compra</label><span class="numin"><span class="pre" id="pre-compra">IPCA +</span><input id="n-compra" type="text" inputmode="decimal" autocomplete="off" aria-label="Taxa na compra, em %"><span class="suf">%</span></span></div>
         <input type="range" id="compra" min="5" max="9.5" step="0.01" value="7.4">
         <div class="hint" id="c-hint">—</div>
       </div>
       <div class="ctrl">
-        <label for="venda">Taxa na venda <output id="o-venda" for="venda"></output></label>
+        <div class="lblrow"><label for="venda">Taxa na venda</label><span class="numin"><span class="pre" id="pre-venda">IPCA +</span><input id="n-venda" type="text" inputmode="decimal" autocomplete="off" aria-label="Taxa na venda, em %"><span class="suf">%</span></span></div>
         <input type="range" id="venda" min="4" max="9.5" step="0.01" value="7">
         <div class="chips" id="chips-venda"></div>
       </div>
@@ -193,8 +209,8 @@ ul.prem b { color: var(--ink); font-weight: 600; }
         <div class="hint" id="h-prazo"></div>
       </div>
       <div class="ctrl">
-        <label for="ipca">IPCA médio ao ano <output id="o-ipca" for="ipca"></output></label>
-        <input type="range" id="ipca" min="2" max="8" step="0.1" value="4">
+        <div class="lblrow"><label for="ipca">IPCA médio ao ano</label><span class="numin"><input id="n-ipca" type="text" inputmode="decimal" autocomplete="off" aria-label="IPCA médio ao ano, em %"><span class="suf">%</span></span></div>
+        <input type="range" id="ipca" min="2" max="8" step="0.01" value="4">
         <div class="hint" id="h-ipca">Inflação que você espera até a venda</div>
       </div>
     </div>
@@ -257,8 +273,8 @@ ul.prem b { color: var(--ink); font-weight: 600; }
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const mesesN = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const pct = v => v.toFixed(2).replace('.', ',') + '%';
-  const brl = v => 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const brl0 = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+  const brl = v => 'R$\u00a0' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const brl0 = v => 'R$\u00a0' + Math.round(v).toLocaleString('pt-BR');
   const sgn = v => (v > 0.005 ? '+' : v < -0.005 ? '−' : '');
 
   /* ---------- Calendário (dias corridos como inteiros, pregões da B3) ---------- */
@@ -382,7 +398,9 @@ ul.prem b { color: var(--ink); font-weight: 600; }
     });
     $('mats-lbl').textContent = TIPOS[cur.tipo].n ? 'Ano de conversão (início dos pagamentos)' : 'Vencimento';
   }
-  const fmtTaxa = (t, r) => (TIPOS[t.tipo].ipca ? 'IPCA + ' : '') + pct(r);
+  const fmtTaxa = (t, r) => (TIPOS[t.tipo].ipca ? 'IPCA\u00a0+\u00a0' : '') + pct(r);
+  const fmtNum = (v, dec) => v.toFixed(dec).replace('.', ',');
+  const syncNum = (id, v, dec) => { const e = $('n-' + id); if (document.activeElement !== e) { e.value = fmtNum(v, dec); e.removeAttribute('aria-invalid'); } };
 
   function select(t, keepHash) {
     cur = t; tip.hidden = true;
@@ -535,9 +553,8 @@ ul.prem b { color: var(--ink); font-weight: 600; }
     const t = cur, T = TIPOS[t.tipo];
     const valor = readValor(), rc = +$('compra').value, rv = +$('venda').value, meses = +$('prazo').value, ipca = +$('ipca').value;
     const maxM = +$('prazo').max;
-    $('o-compra').textContent = fmtTaxa(t, rc);
-    $('o-venda').textContent = fmtTaxa(t, rv);
-    $('o-ipca').textContent = ipca.toFixed(1).replace('.', ',') + '%';
+    syncNum('compra', rc, 2); syncNum('venda', rv, 2); syncNum('ipca', ipca, Math.abs(ipca * 10 - Math.round(ipca * 10)) > 1e-6 ? 2 : 1);
+    $('pre-compra').hidden = $('pre-venda').hidden = !T.ipca;
     chips.querySelectorAll('button').forEach(b => b.classList.toggle('on', Math.abs(+b.dataset.v - rv) < 0.001));
     if (!valor) { ['r-carry','r-carry-p','r-mtm','r-mtm-p','r-tot','r-tot-p','r-liq'].forEach(i => $(i).textContent = '—'); $('r-ganho').textContent = 'Informe o valor investido'; return; }
     const s = sim(t, valor, rc, rv, meses, ipca);
@@ -602,6 +619,22 @@ ul.prem b { color: var(--ink); font-weight: 600; }
   }
   $('compra').addEventListener('input', () => { buildChips(); update(); });
   ['venda', 'prazo', 'ipca'].forEach(id => $(id).addEventListener('input', update));
+  // Campos para digitar a taxa: aceitam vírgula ou ponto e ampliam a barra se o valor sair da faixa dela
+  ['compra', 'venda', 'ipca'].forEach(id => {
+    const n = $('n-' + id), s = $(id);
+    const aplicar = () => {
+      const v = parseFloat(String(n.value).replace(/\s|%/g, '').replace(',', '.'));
+      if (!isFinite(v) || v < 0 || v > 40) { n.setAttribute('aria-invalid', 'true'); return; }
+      n.removeAttribute('aria-invalid');
+      if (v < +s.min) s.min = Math.floor(v); if (v > +s.max) s.max = Math.ceil(v);
+      s.value = v; if (id === 'compra') buildChips(); update();
+    };
+    n.addEventListener('input', aplicar);
+    n.addEventListener('change', () => { aplicar(); n.blur(); update(); });
+    n.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); n.blur(); } });
+    n.addEventListener('blur', update);
+    n.addEventListener('focus', () => n.select());
+  });
 
   function renderPrem() {
     const T = TIPOS[cur.tipo], ul = $('prem'); ul.innerHTML = '';
