@@ -153,6 +153,17 @@ ul.prem b { color: var(--ink); font-weight: 600; }
 </head>
 <body>
 <div class="wrap">
+  <style>
+  .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; align-self: flex-start; max-width: 100%; overflow-x: auto; margin-bottom: -4px; }
+  .tabs a { font-size: 14px; font-weight: 600; color: var(--muted); text-decoration: none; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
+  .tabs a:hover { color: var(--ink); }
+  .tabs a[aria-current="page"] { background: var(--ink); color: var(--bg); }
+  </style>
+  <nav class="tabs" aria-label="Simuladores">
+    <a href="./" aria-current="page">Tesouro Direto</a>
+    <a href="https://danielzawader.github.io/simulador/di-dap-futuro/#di1">DI Futuro</a>
+    <a href="https://danielzawader.github.io/simulador/di-dap-futuro/#dap">DAP Futuro</a>
+  </nav>
   <header>
     <div class="eyebrow">Tesouro Direto · taxas de <span id="c-data">—</span></div>
     <h1>Simulador Tesouro Direto</h1>
